@@ -106,7 +106,7 @@ function setItemToEdit(item){
     itemlist.querySelectorAll('li').forEach(n => n.classList.remove('edit-mode'))
 
     item.classList.add('edit-mode');
-    formbtn.innerHTML = '<i class="fa-solid fa-pen"</i>    Update Item';
+    formbtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Items';
     formbtn.style.backgroundColor = '#228B22'
     iteminput.value = item.innerText;
 }
