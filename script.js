@@ -2,7 +2,9 @@ const itemform = document.querySelector('#item-form');
 const iteminput = document.querySelector('#item-input');
 const itemlist = document.querySelector('#item-list');
 const clearbtn = document.querySelector('#clear');
+const formbtn = itemform.querySelector('button');
 const filter = document.querySelector('#filter');
+let isEditMode = false;
 
 function displayitems(){
     const itemsFromStorage = getItemsFromStorage();
@@ -54,6 +56,20 @@ function addItem(e){
         return
     }
 
+    if(isEditMode){
+        const itemtoedit = itemlist.querySelector('.edit-mode');
+        removeItemFromStorage(itemtoedit.innerText);
+        itemtoedit.classList.remove('edit-mode');
+        itemtoedit.remove();
+        isEditMode = false;
+    }
+    else {
+        if (checkIfItemExists(newItem)){
+            alert('that item already exists!');
+            return;
+        };
+    }
+
     // create list item
     addItemToDOM(newItem);
 
@@ -79,7 +95,20 @@ function onClickRemoveItem(e){
     if(e.target.parentElement.classList.contains('remove-item')){
         removeItem(e.target.parentElement.parentElement);
     }
-    
+    else {
+        setItemToEdit(e.target);
+    }
+}
+
+function setItemToEdit(item){
+    isEditMode = true;
+
+    itemlist.querySelectorAll('li').forEach(n => n.classList.remove('edit-mode'))
+
+    item.classList.add('edit-mode');
+    formbtn.innerHTML = '<i class="fa-solid fa-pen"</i>    Update Item';
+    formbtn.style.backgroundColor = '#228B22'
+    iteminput.value = item.innerText;
 }
 
 function removeItem(item){
@@ -108,6 +137,8 @@ function clearItems(e){
 
 
 function checkUI(){
+iteminput.value = '';
+
      const items = itemlist.querySelectorAll('li');
      if(items.length === 0){
         filter.style.display = 'none';
@@ -116,6 +147,10 @@ function checkUI(){
         filter.style.display = 'block';
         clearbtn.style.display = 'block';
      }
+     formbtn.innerHTML = '<i class = "fa-solid fa-plus"></i> Add Item';
+     formbtn.style.backgroundColor = '#333';
+
+     isEditMode = false;
 }
 
 function filteritems(e){
@@ -127,6 +162,11 @@ function filteritems(e){
             n.style.display = 'flex';
         }
     })
+}
+
+function checkIfItemExists(item){
+    const itemfromlocal = getItemsFromStorage();
+    return itemfromlocal.includes(item);
 }
 
 
